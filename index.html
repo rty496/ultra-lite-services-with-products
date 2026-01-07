@@ -11,6 +11,7 @@
   --m:#6b7280;
   --bg:#fff
 }
+/*******/
 *{
   box-sizing:border-box
 }
@@ -86,28 +87,65 @@ body{
   gap:8px
 }
 
+/* Горизонтальна стрічка товарів (свайп ліво/право) */
+.row{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:6px;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+}
+.row::-webkit-scrollbar{height:6px}
+.row::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:999px}
+.row::-webkit-scrollbar-track{background:transparent}
+.row .card{
+  flex:0 0 112px;          /* щоб було що листати */
+  scroll-snap-align:start;
+}
+
 .card{
   border:1px solid #e5e7eb;
   border-radius:12px;
   padding:6px
 }
 .ph{
-  height:44px;
-  border-radius:10px;
+  height:72px;            /* ⬅️ менша висота картки */
+  border-radius:12px;
   background:#f3f4f6
 }
-.n{
-  margin:6px 0 4px;
-  font-size:10px;
+.ph img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  border-radius:12px
+}
+/* Текст + рейтинг (як у макеті) */
+.meta{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin:6px 0 0
+}
+.title{
+  font-size:12px;
+  line-height:1.15;
+  color:#111;
+  max-height:2.4em;
+  overflow:hidden
+}
+.rate{
+  font-size:12px;
+  font-weight:600;
+  white-space:nowrap;
   color:#111
 }
-.p{
-  font-size:11px;
-  font-weight:700
-}
-.small{
-  font-size:10px;
-  color:var(--m)
+.price{
+  margin:4px 0 0;
+  font-size:12px;
+  font-weight:700;
+  color:var(--g)
 }
 .block{
   margin:10px 0;
@@ -124,6 +162,23 @@ body{
   display:block;
   object-fit:cover;    /* ⬅️ красиво обрізає */
 }
+
+/* Банер як у макеті (текст поверх картинки) */
+.banner{position:relative;width:100%;height:100%}
+.bannerBar{
+  position:absolute;
+  left:0;right:0;bottom:0;
+  display:flex;
+  gap:10px;
+  padding:10px;
+  color:#fff;
+  background:linear-gradient(to top, rgba(0,0,0,.60), rgba(0,0,0,0));
+  font-size:11px
+}
+.bannerLeft{flex:1;max-width:140px;line-height:1.1;opacity:.95}
+.bannerMid{flex:2;line-height:1.1;font-weight:600}
+.bannerSub{display:block;font-weight:400;opacity:.9;margin-top:2px}
+.bannerArrow{font-size:22px;line-height:1;opacity:.95}
 
 .center{
   display:flex;
@@ -168,31 +223,75 @@ body{
 
   <section id="new">
     <div class="h"><b>ТОП</b><a class="more" href="more.html">Всього →</a></div>
-    <div class="grid">
-      <article class="card"><div class="ph"><img alt="" src="data:image/webp;base64,UklGRkoDAABXRUJQVlA4ID4DAABQFwCdASp4AFoAPwFsr1IrJaQirLDdgWAgCWkA1jXFddvv/mjxOuK88huyC1T1CBF1vgc25ff7ZBPKLqmiGurXW83asZ3Gi06JhXLrwEaaK3aeG6KAn2ZBwNaSSKm3Om+RSG5/ir/tpMSTsooOyd3LMlvFBPu/5VEZouQs1T5vuLSykbdH3x1Sp1QTr4YxM0tD5PGbVCiYEu71yP2mqJ6te1Z3mfQXCekcy9JKSrWh8dZFI4jcFzC5E1YdaEPHhX7CWAAA/vQw3Befq9E7cTNRpmA1iUQDQ7zI17zNWL4564JT8RozdVzqdDTzHA7TmjWYu516F+LRpULgdmVzMFiHkk5k3hAgD6f+DCaK5SIpJqQKz5LFtMRedl5gjB4JRt6y4mFan4AMsKTCOoPACwnZDYZ5sOKnUqSya4SeV/ONQejM93m5rPhA+chbz6HHJy457IcoxpmodPgx/O4neW6XfQuev3RVmLeSostHRKZrIiSTlLzqjeCR9RxWvSPpyPVvRX5o7Xqfxh+h5mk5IQwceMcSaVmfR2sFO7DyeJPQFrM0fg10xtet8Hp+tcRitZPvdpXPwpLezxQb94xgP+XA+Q3uqoUQ4jLgkZa6ZyYZADZ5cN+snLWwlaW04h2VrJRbcg8381g1t2Aan5DD6Be9RwF7X0COJseNsmsVxnUD775RYvmpG6QpDFaNkjq39JDbglgEdM5t8nc3YgeSTyvZu5uueduI3UT5kfVsEQXjXgjcvBN5us2LMhSm7DdCj9TmJM54sRaagY1cLB8VOJyNoonRLb6vpzxJ5jKBfPx7jsQ5IP32qJnVBkbeHwZn3MSpgrN/r+8gmsyME2kua6QTTlJ2KKzxYzCzlAQrNSX9WHBAp9344npP4IhLqH9/LnP4BMEAUOIbrUypMFLMVbOF1QnM/TJxsfrPeYtSpbpUrIVywYDgI5j7nDqEaavc6nwnZZKCW0J9q5MFWA8K4828uO/n1EYzKRBGKffDQMhcotCSMtKMlhM46Q4qeNIFYwWOo4Un36Jty1ZF8HeZ51vGB+bmG2CPnVOv+P0VLjX0B/4LWUCSAB+cHewgTkPGE7pQkc1INR0GRjC9AAAAAA==" 
-        style="width:100%;height:44px;display:block;object-fit:cover;border-radius:10px"></div><div class="n">Товар 1</div><div class="p">₴299</div><div class="small">в наявності</div></article>
-      <article class="card"><div class="ph"><img alt="" src="data:image/webp;base64,UklGRqIEAABXRUJQVlA4IJYEAACwGgCdASp4AFoAPwFurk+rJqQiK1S+KWAgCUAZ0rv5FNwJz/6ndFR/FuVPuj8w+ozK30f98jjrE7XSCOk4in78XZnNfdmNju7fIrEuur2x5l5c9fCl4rSEsSkGESvS6Jg6Zr4EjlD9WKynlvtm40WDvz2cJVrrCItw6kiogisSa8lz+Mv2o2tRfSIdjh/zN29yWexvj04XfC11Gt4KpbrZ10FvikqH/4T+KJ/zH/2p2PfpwltRt4hMP9f/1n/ClyVjF7oXQqvbqx1GV6mIv5UhSfBe+arE8rYzd4DatwAA/vfirzRT7u/vM5LGGHfRShlJ23E67pS9ZgXcwLAfvzTqxoRmkOC59k+y+7eGGT1t18r6sX7WY/r/Yoop04ob4ReLrku20EUKYwiBuh6KsQAh/4WQR+k78sc5lUNKb1v8sKOwHncBW/xODiaXF1LUucuTcCqWmsMVL7DlanblBjb6SbCV5X4vRnvTzdE7oKPmUceZaokMfAUsolrfaBYtOgu4+itdyBGXGt37h/U7ledWH+IqYEFFLFV9mYTGbK/FzMmsEYnJkgvqZzux3RlCxCUiNLzhWkkeyVV2Jd89h4+KmUCGyTh9UKiriucbNmK9gPwanRG5AaB/otS9N13z8KnsnATSRWanxdi3/5vtP3eqX8usRQy+ZDwycCNVk0CGcBd9I7BbDDkOEGTBWzDeHgzQXy0FB/IVbRsFGKp/b4DletSq4a03vzdYPiIVN6pz5dDSQfO4Jj8IIlAeCc6+F1W447GktfjoAqeLzKDOaqgm+OfcZCs63N/oR9QMfJjIY0wLqN44E/gwR9i07DMf/sD11JXi1OqYXy075md2ki3IXJE/zqeXrXwMGxG1SRYVeT8frMg2ncWEdgSMRzq67NScL+NAb9aNByByRNCDUheOvHQiQTHpoyB4anWcHo46/7QzvsQRxiqwfQDZjnHm6PvFIRwymO9/idk+fkmCxh6MyuRWElZZYxwA+cWWQz9hPjNYN6b2IKkvGqp9xEIRSqr9rvK6R2sD0krtdFjASndxWdWV2dTlFRVaaA72ArU7eIpt4+Gk9HNb4+Xd4OdD3KNTlQvqUYP3CrWBvwGaGXCLEEENk1CLf36u+pncsfGLOTPxsSaILUmbG7xSn181b7T97oqu880Ht/IaF8BhfJEf2TxTtogocGV5v0v7os3AvBz/h8ufmXRCVRJKwbnfu4cUtl6YAG87PC0pBevSrP6CMU+rzn2uTFRtWI2uxAOz6z75CzbzytXYaEv4PCO+ZO/ZSQ388nlEqzd1W+vmptZRDKX/cS7CyESPgLqrYsrHS1lH0FBtTJkZ02vTtKDvDHQXmsE1UK9PT81T5ebH4ClVt37pWmpeTZV4s7dNxsWClOvBe+Jz65TZidiF43x0jO1h+Lu7cz5XOVldrGUr+FaVd4HNEshb0OksByrnNu0p4qFq6ddC/PDWwOHvOGFKKa3Xi9pRW5rXh0HtuEZ4/XYFNGSQRupsOOnakwkW63pHB5DRAMuHPMT/Tvlqs/73IMKNrpIvnqPnXKGYDJHkZHKxV47KAAAA" 
-        style="width:100%;height:44px;display:block;object-fit:cover;border-radius:10px"></div><div class="n">Товар 2</div><div class="p">₴399</div><div class="small">в наявності</div></article>
-      <article class="card"><div class="ph"><img alt="" src="data:image/webp;base64,UklGRoQCAABXRUJQVlA4IHgCAAAwFACdASp4AFoAPwFytFCrJyUiqrILwWAgCWkACxEb32cT/RsMxC2VsIr+b3ABeBduRvfBtZxtIHCmfC/Q9qJXH+7mYWYGLD/gs9Xsl3fgyhUyHUzf1rrTBASH6tBbpAWHLXM1IdvPm+DtTB7kPsSy3TPx05OKzgiY4X7M7YbIp/9SBrF21Qe8xV9Pk1xLgrDCjNL7KqmKUDIEWpmY6HLRe7hOwvxoD1l1gAD+8sICPX6JdLbDKKj/9n/E2FZSLz9whlVZTHjbshHGelbhVc2b7Y3Skai5N/zuRmkZvrHKUOWF976zC/vgV6NT25CHb/oyOgpEU5tZFGmwKWB9/kcV93nst6KTNRSBCZi1KiBQIew5uRAQE5dP8x8lnSY7DhiQ5nygX+TJg+ZRVjU4XziTAy5tYY66f5yKcMRuhZ2/ZMe/MoCCTJ8OmCqGGxMsWnDBuTTc0y4aNGonw70BYds0cXMApu+lmp6LSbTfiZwSwkDab32DTPSM0fjab0B+1rLav7M4/Etuy+0BVXnWJ0YJLE+b0MKSLqCrx7Wj5X4vkB0+GY/vYT/KCCZ/qb2oF5cqwXzk7Dv9kK5AC06r8/dfcA/1pp9wcV6720tlXAD2yBmaeshtiW3AXHZ6ouFyH15HQym11awHEw1cZObCiAEAQt1dr7gCKUY8xxAz/Bpw1v+FQhnXqOCTFgS/bLVdiT72fEsuRLfiIIt9sIfnU3ftxO0qmr/lQSmsW5fJLBKiVwsIgyzT3h/SvK1QYY+pT4ZoqmPGbls6hDCy0N1/nnaT/belLVzGvn8mgdwUo19GE3VlhSCcswI8a3eA2FYqZ5FwAAEsBAAAAA==" 
-        style="width:100%;height:44px;display:block;object-fit:cover;border-radius:10px"></div><div class="n">Товар 3</div><div class="p">₴499</div><div class="small">в наявності</div></article>
+    <div class="row" aria-label="ТОП товари">
+      <article class="card">
+        <div class="ph"><img alt="Сковородка" src="data:image/webp;base64,UklGRkoDAABXRUJQVlA4ID4DAABQFwCdASp4AFoAPwFsr1IrJaQirLDdgWAgCWkA1jXFddvv/mjxOuK88huyC1T1CBF1vgc25ff7ZBPKLqmiGurXW83asZ3Gi06JhXLrwEaaK3aeG6KAn2ZBwNaSSKm3Om+RSG5/ir/tpMSTsooOyd3LMlvFBPu/5VEZouQs1T5vuLSykbdH3x1Sp1QTr4YxM0tD5PGbVCiYEu71yP2mqJ6te1Z3mfQXCekcy9JKSrWh8dZFI4jcFzC5E1YdaEPHhX7CWAAA/vQw3Befq9E7cTNRpmA1iUQDQ7zI17zNWL4564JT8RozdVzqdDTzHA7TmjWYu516F+LRpULgdmVzMFiHkk5k3hAgD6f+DCaK5SIpJqQKz5LFtMRedl5gjB4JRt6y4mFan4AMsKTCOoPACwnZDYZ5sOKnUqSya4SeV/ONQejM93m5rPhA+chbz6HHJy457IcoxpmodPgx/O4neW6XfQuev3RVmLeSostHRKZrIiSTlLzqjeCR9RxWvSPpyPVvRX5o7Xqfxh+h5mk5IQwceMcSaVmfR2sFO7DyeJPQFrM0fg10xtet8Hp+tcRitZPvdpXPwpLezxQb94xgP+XA+Q3uqoUQ4jLgkZa6ZyYZADZ5cN+snLWwlaW04h2VrJRbcg8381g1t2Aan5DD6Be9RwF7X0COJseNsmsVxnUD775RYvmpG6QpDFaNkjq39JDbglgEdM5t8nc3YgeSTyvZu5uueduI3UT5kfVsEQXjXgjcvBN5us2LMhSm7DdCj9TmJM54sRaagY1cLB8VOJyNoonRLb6vpzxJ5jKBfPx7jsQ5IP32qJnVBkbeHwZn3MSpgrN/r+8gmsyME2kua6QTTlJ2KKzxYzCzlAQrNSX9WHBAp9344npP4IhLqH9/LnP4BMEAUOIbrUypMFLMVbOF1QnM/TJxsfrPeYtSpbpUrIVywYDgI5j7nDqEaavc6nwnZZKCW0J9q5MFWA8K4828uO/n1EYzKRBGKffDQMhcotCSMtKMlhM46Q4qeNIFYwWOo4Un36Jty1ZF8HeZ51vGB+bmG2CPnVOv+P0VLjX0B/4LWUCSAB+cHewgTkPGE7pQkc1INR0GRjC9AAAAAA=="></div>
+        <div class="meta">
+          <div class="title">Сковородка тефлонова<br>з кришкою</div>
+          <div class="rate">★ 3.5</div>
+        </div>
+        <div class="price">2400 грн</div>
+      </article>
+
+      <article class="card">
+        <div class="ph"><img alt="Сковородка" src="data:image/webp;base64,UklGRqIEAABXRUJQVlA4IJYEAACwGgCdASp4AFoAPwFurk+rJqQiK1S+KWAgCUAZ0rv5FNwJz/6ndFR/FuVPuj8w+ozK30f98jjrE7XSCOk4in78XZnNfdmNju7fIrEuur2x5l5c9fCl4rSEsSkGESvS6Jg6Zr4EjlD9WKynlvtm40WDvz2cJVrrCItw6kiogisSa8lz+Mv2o2tRfSIdjh/zN29yWexvj04XfC11Gt4KpbrZ10FvikqH/4T+KJ/zH/2p2PfpwltRt4hMP9f/1n/ClyVjF7oXQqvbqx1GV6mIv5UhSfBe+arE8rYzd4DatwAA/vfirzRT7u/vM5LGGHfRShlJ23E67pS9ZgXcwLAfvzTqxoRmkOC59k+y+7eGGT1t18r6sX7WY/r/Yoop04ob4ReLrku20EUKYwiBuh6KsQAh/4WQR+k78sc5lUNKb1v8sKOwHncBW/xODiaXF1LUucuTcCqWmsMVL7DlanblBjb6SbCV5X4vRnvTzdE7oKPmUceZaokMfAUsolrfaBYtOgu4+itdyBGXGt37h/U7ledWH+IqYEFFLFV9mYTGbK/FzMmsEYnJkgvqZzux3RlCxCUiNLzhWkkeyVV2Jd89h4+KmUCGyTh9UKiriucbNmK9gPwanRG5AaB/otS9N13z8KnsnATSRWanxdi3/5vtP3eqX8usRQy+ZDwycCNVk0CGcBd9I7BbDDkOEGTBWzDeHgzQXy0FB/IVbRsFGKp/b4DletSq4a03vzdYPiIVN6pz5dDSQfO4Jj8IIlAeCc6+F1W447GktfjoAqeLzKDOaqgm+OfcZCs63N/oR9QMfJjIY0wLqN44E/gwR9i07DMf/sD11JXi1OqYXy075md2ki3IXJE/zqeXrXwMGxG1SRYVeT8frMg2ncWEdgSMRzq67NScL+NAb9aNByByRNCDUheOvHQiQTHpoyB4anWcHo46/7QzvsQRxiqwfQDZjnHm6PvFIRwymO9/idk+fkmCxh6MyuRWElZZYxwA+cWWQz9hPjNYN6b2IKkvGqp9xEIRSqr9rvK6R2sD0krtdFjASndxWdWV2dTlFRVaaA72ArU7eIpt4+Gk9HNb4+Xd4OdD3KNTlQvqUYP3CrWBvwGaGXCLEEENk1CLf36u+pncsfGLOTPxsSaILUmbG7xSn181b7T97oqu880Ht/IaF8BhfJEf2TxTtogocGV5v0v7os3AvBz/h8ufmXRCVRJKwbnfu4cUtl6YAG87PC0pBevSrP6CMU+rzn2uTFRtWI2uxAOz6z75CzbzytXYaEv4PCO+ZO/ZSQ388nlEqzd1W+vmptZRDKX/cS7CyESPgLqrYsrHS1lH0FBtTJkZ02vTtKDvDHQXmsE1UK9PT81T5ebH4ClVt37pWmpeTZV4s7dNxsWClOvBe+Jz65TZidiF43x0jO1h+Lu7cz5XOVldrGUr+FaVd4HNEshb0OksByrnNu0p4qFq6ddC/PDWwOHvOGFKKa3Xi9pRW5rXh0HtuEZ4/XYFNGSQRupsOOnakwkW63pHB5DRAMuHPMT/Tvlqs/73IMKNrpIvnqPnXKGYDJHkZHKxV47KAAAA"></div>
+        <div class="meta">
+          <div class="title">Сковородка тефлонова<br>з кришкою</div>
+          <div class="rate">★ 3.5</div>
+        </div>
+        <div class="price">2400 грн</div>
+      </article>
+
+      <article class="card">
+        <div class="ph"><img alt="Сковородка" src="data:image/webp;base64,UklGRoQCAABXRUJQVlA4IHgCAAAwFACdASp4AFoAPwFytFCrJyUiqrILwWAgCWkACxEb32cT/RsMxC2VsIr+b3ABeBduRvfBtZxtIHCmfC/Q9qJXH+7mYWYGLD/gs9Xsl3fgyhUyHUzf1rrTBASH6tBbpAWHLXM1IdvPm+DtTB7kPsSy3TPx05OKzgiY4X7M7YbIp/9SBrF21Qe8xV9Pk1xLgrDCjNL7KqmKUDIEWpmY6HLRe7hOwvxoD1l1gAD+8sICPX6JdLbDKKj/9n/E2FZSLz9whlVZTHjbshHGelbhVc2b7Y3Skai5N/zuRmkZvrHKUOWF976zC/vgV6NT25CHb/oyOgpEU5tZFGmwKWB9/kcV93nst6KTNRSBCZi1KiBQIew5uRAQE5dP8x8lnSY7DhiQ5nygX+TJg+ZRVjU4XziTAy5tYY66f5yKcMRuhZ2/ZMe/MoCCTJ8OmCqGGxMsWnDBuTTc0y4aNGonw70BYds0cXMApu+lmp6LSbTfiZwSwkDab32DTPSM0fjab0B+1rLav7M4/Etuy+0BVXnWJ0YJLE+b0MKSLqCrx7Wj5X4vkB0+GY/vYT/KCCZ/qb2oF5cqwXzk7Dv9kK5AC06r8/dfcA/1pp9wcV6720tlXAD2yBmaeshtiW3AXHZ6ouFyH15HQym11awHEw1cZObCiAEAQt1dr7gCKUY8xxAz/Bpw1v+FQhnXqOCTFgS/bLVdiT72fEsuRLfiIIt9sIfnU3ftxO0qmr/lQSmsW5fJLBKiVwsIgyzT3h/SvK1QYY+pT4ZoqmPGbls6hDCy0N1/nnaT/belLVzGvn8mgdwUo19GE3VlhSCcswI8a3eA2FYqZ5FwAAEsBAAAAA=="></div>
+        <div class="meta">
+          <div class="title">Сковородка тефлонова<br>з кришкою</div>
+          <div class="rate">★ 3.5</div>
+        </div>
+        <div class="price">2400 грн</div>
+      </article>
     </div>
   </section>
 
   <div class="block" aria-label="Банер">
-  <img
-    src="283974BA-A1AD-4BDE-B457-B9606FD43530_4_5005_c 1.png"
-    alt="Банер"
-    style="width:100%;display:block;border-radius:16px"
-  >
-</div>
+    <div class="banner">
+      <img src="283974BA-A1AD-4BDE-B457-B9606FD43530_4_5005_c 1.png" alt="Банер">
+      <div class="bannerBar">
+        <div class="bannerLeft">Товар можна подивитись в режимі ONLINE</div>
+        <div class="bannerMid">Сковородка чавунна з кришкою<span class="bannerSub">Італія</span></div>
+        <div class="bannerArrow">›</div>
+      </div>
+    </div>
+  </div>
 
 
   <section id="popular">
     <div class="h"><b>Лідер продаж</b><a class="more" href="more.html">Всього →</a></div>
-    <div class="grid">
-      <article class="card"><div class="ph"></div><div class="n">Товар 4</div><div class="p">₴219</div></article>
-      <article class="card"><div class="ph"></div><div class="n">Товар 5</div><div class="p">₴319</div></article>
-      <article class="card"><div class="ph"></div><div class="n">Товар 6</div><div class="p">₴419</div></article>
+    <div class="row" aria-label="Лідер продаж">
+      <article class="card">
+        <div class="ph"></div>
+        <div class="meta">
+          <div class="title">Сковородка тефлонова<br>з кришкою</div>
+          <div class="rate">★ 3.5</div>
+        </div>
+        <div class="price">2400 грн</div>
+      </article>
+      <article class="card">
+        <div class="ph"></div>
+        <div class="meta">
+          <div class="title">Сковородка тефлонова<br>з кришкою</div>
+          <div class="rate">★ 3.5</div>
+        </div>
+        <div class="price">2400 грн</div>
+      </article>
+      <article class="card">
+        <div class="ph"></div>
+        <div class="meta">
+          <div class="title">Сковородка тефлонова<br>з кришкою</div>
+          <div class="rate">★ 3.5</div>
+        </div>
+        <div class="price">2400 грн</div>
+      </article>
     </div>
   </section>
 
